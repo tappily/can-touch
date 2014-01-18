@@ -1,0 +1,7 @@
+{
+    "name": "can-touch",
+    "title": "Can touch",
+    "description": "Touch state model and controller for CanJs",
+    "scripts": ["can-touch.js"],
+    "styles": ["can-touch.css"]
+}
