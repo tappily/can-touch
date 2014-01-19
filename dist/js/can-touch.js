@@ -11406,60 +11406,73 @@ define('can-touch/move',['can/control'], function ($C) {
   
   return $C.extend({
     default: {
-      model: null
+      model: null,
+      move: null
     }
   }, {
-    'mousemove': function(el, ev) {
-      this.options.model.update(ev);
-    },
-    'touchmove': function(el, ev) {
+    '{move}': function(el, ev) {
       this.options.model.update(ev);
     }
   });
 });
-define('can-touch/control',['can/control', './move'], function ($C, Fly) {
-  
-  // replace this module and give me LIFE
-  return $C.extend({
-    default: {
-      model: null,
-      endOnCancel: false,
-      cancelWithin: 0
-    }
-  }, {
-    init: function() {
-
-    },
-    '{state} change': function() {
-      console.log(arguments);
-    },
-    '{model} phase': function(el, ev, val) {
-      console.log(arguments);
-      switch(val) {
-        case 'start':
-          this.fly = new Fly(this.element, {
-            model: this.options.model
-          }); break;
-        case 'end':
-          this.fly.destroy(); break;
-      }
-    },
-    'mousedown': function(el, ev) {
-      this.options.model.update(ev);
-    },
-    'mouseup': function(el, ev) {
-      this.options.model.update(ev);
-    },
-    'touchstart': function(el, ev) {
-      this.options.model.update(ev);
-    },
-    'touchcancel': function(el, ev) {
-      this.options.model.update(ev);
-    },
-    'touchend': function(el, ev) {
-      this.options.model.update(ev);
-    }
-  });
+define('can-touch/control',['can/util/library', 'can/control', './move'], function (u, $C, Fly) {
+    
+    // replace this module and give me LIFE
+    return $C.extend({
+        touchEvents: {
+            start: 'touchstart',
+            move: 'touchmove',
+            end: 'touchend',
+            cancel: 'touchcanel'
+        },
+        mouseEvents: {
+            start: 'mousedown',
+            move: 'mousemove',
+            end: 'mouseup',
+            cancel: 'mouseleave'
+        },
+        defaults: {
+            model: null,
+            endOnCancel: false,
+            cancelWithin: 0,
+            implementsTouch: ('ontouchstart' in window)
+        }
+    }, {
+        init: function () {
+            this.options.model.attr('implementsTouch', this.options.implementsTouch);
+        },
+        '{model} implementsTouch': function (el, ev, val) {
+            if (this.options.implementsTouch) {
+                u.extend(this.options, this.constructor.touchEvents);
+            } else {
+                u.extend(this.options, this.constructor.mouseEvents);
+            }
+            this.on();
+        },
+        '{model} phase': function (el, ev, val) {
+            console.log(arguments);
+            switch (val) {
+                case 'start':
+                    this.fly = new Fly(this.element, {
+                        model: this.options.model,
+                        move: this.options.move
+                    });
+                    break;
+                case 'end':
+                    this.fly.destroy();
+                    break;
+            }
+        },
+        '{start}': function (el, ev) {
+            this.options.model.update(ev);
+        },
+        '{end}': function (el, ev) {
+            this.options.model.update(ev);
+        },
+        '{cancel}': function (el, ev) {
+            this.options.model.update(ev);
+        }
+    });
 });
 /*!
  * CanJS - 2.0.4
@@ -15880,7 +15893,8 @@ define('can-touch/model',['can/model', 'can/map/attributes'], function(m) {
     attributes: {
       phase: 'phase',
       x: 'number',
-      y: 'number'
+      y: 'number',
+      implementsTouch: 'boolean'
     },
     convert: {
       phase: function(i) {
@@ -15889,6 +15903,8 @@ define('can-touch/model',['can/model', 'can/map/attributes'], function(m) {
     }
   }, {
     start: function(event) {
+      this.removeAttr('x');
+      this.removeAttr('y');
       this.attr('xs', event.pageX || event.clientX);
       this.attr('ys', event.pageY || event.clientY);
     },
@@ -15897,6 +15913,7 @@ define('can-touch/model',['can/model', 'can/map/attributes'], function(m) {
       this.attr('y', event.pageY);
     },
     update: function(event) {
+      console.log(event.type);
       switch(event.type) {
         case 'touchstart':
           this.start(event.originalEvent.touches[0]);
@@ -15922,7 +15939,7 @@ define('can-touch/model',['can/model', 'can/map/attributes'], function(m) {
           break;
         case 'touchcancel':
           //if this options endOnCancel
-          //this.attr('phase', 'cancel');
+          this.attr('phase', 'cancel');
           break;
       }
     }

@@ -2,13 +2,11 @@ define(['can/control'], function ($C) {
   'use strict';
   return $C.extend({
     default: {
-      model: null
+      model: null,
+      move: null
     }
   }, {
-    'mousemove': function(el, ev) {
-      this.options.model.update(ev);
-    },
-    'touchmove': function(el, ev) {
+    '{move}': function(el, ev) {
       this.options.model.update(ev);
     }
   });

@@ -4,7 +4,8 @@ define(['can/model', 'can/map/attributes'], function(m) {
     attributes: {
       phase: 'phase',
       x: 'number',
-      y: 'number'
+      y: 'number',
+      implementsTouch: 'boolean'
     },
     convert: {
       phase: function(i) {
@@ -13,6 +14,8 @@ define(['can/model', 'can/map/attributes'], function(m) {
     }
   }, {
     start: function(event) {
+      this.removeAttr('x');
+      this.removeAttr('y');
       this.attr('xs', event.pageX || event.clientX);
       this.attr('ys', event.pageY || event.clientY);
     },
@@ -21,6 +24,7 @@ define(['can/model', 'can/map/attributes'], function(m) {
       this.attr('y', event.pageY);
     },
     update: function(event) {
+      console.log(event.type);
       switch(event.type) {
         case 'touchstart':
           this.start(event.originalEvent.touches[0]);
@@ -46,7 +50,7 @@ define(['can/model', 'can/map/attributes'], function(m) {
           break;
         case 'touchcancel':
           //if this options endOnCancel
-          //this.attr('phase', 'cancel');
+          this.attr('phase', 'cancel');
           break;
       }
     }
