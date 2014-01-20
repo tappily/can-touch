@@ -1,5 +1,8 @@
-<div>Phase: <span class="phase">{{phase}}</span></div>
-<div>Start point: <span class="start">{{xs}}, {{ys}}</span></div>
-<div>point: <span class="status">{{x}}, {{y}}</span></div>
+<div>Phase: <span class="status">{{type}}</span></div>
+<div>Start point: <span class="status">{{xs}}, {{ys}}</span></div>
+<div>Touches: <span class="status">{{touches.length}}</span></div>
+{{#each touches}}
+    <div>Touch# <span>{{id}}</span>: <span class="status">{{x}}, {{y}}</span></div>
+{{/each}}
 <div>Status: <span class="status">{{status}}</span></div>
-<div>Gesture: <span class="gesture">{{gesture}}</span></div>
+<div>Gesture: <span class="status">{{gesture}}</span></div>
