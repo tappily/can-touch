@@ -4,12 +4,12 @@ define(['can/map', 'can/map/attributes'], function (m) {
         attributes: {
             x: 'x',
             y: 'y',
-            xs: 'x',
-            ys: 'y',
-            xd: 'number',
-            yd: 'number',
-            start: 'date',
-            end: 'date',
+            'x-origin': 'x',
+            'y-origin': 'y',
+            'x-distance': 'number',
+            'y-distance': 'number',
+            'start-time': 'date',
+            'end-time': 'date',
             duration: 'number'
         },
         convert: {
@@ -23,26 +23,26 @@ define(['can/map', 'can/map/attributes'], function (m) {
     }, {
         init: function(touch) {
             this.attr('id', touch.identifier);
-            this.attr('xs', touch);
-            this.attr('ys', touch);
+            this.attr('x-origin', touch);
+            this.attr('y-origin', touch);
 
             var now = new Date();
-            this.attr('start', now);
-            this.attr('end', now);
+            this.attr('start-time', now);
+            this.attr('end-time', now);
             this.attr('duration', 0);
             return this;
         },
         end: function() {
             var now = new Date();
-            var elapsed = now - this.attr('start');
+            var elapsed = now - this.attr('start-time');
             this.attr('duration', elapsed);
             this.attr('end', now);
         },
         update: function(touch) {
             this.attr('x', touch);
             this.attr('y', touch);
-            this.attr('xd', this.attr('x') - this.attr('xs'));
-            this.attr('yd', this.attr('y') - this.attr('ys'));
+            this.attr('x-distance', this.attr('x') - this.attr('x-origin'));
+            this.attr('y-distance', this.attr('y') - this.attr('y-origin'));
         }
     });
 });

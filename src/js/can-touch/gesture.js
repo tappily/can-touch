@@ -1,13 +1,13 @@
-define(['can/util/library', 'can/control', './touches', './move'], function (u, C, T, Fly) {
+define(['can/control'], function (C) {
     'use strict';
     // replace this module and give me LIFE
     return C.extend({
         defaults: {
             model: null,
-            touch1xd: '0.xd',
-            touch1yd: '0.yd',
-            touch2xd: '1.xd',
-            touch2yd: '1.yd',
+            touch1xd: '0.x-distance',
+            touch1yd: '0.y-distance',
+            touch2xd: '1.x-distance',
+            touch2yd: '1.y-distance',
             threshold: 3
         }
     }, {
