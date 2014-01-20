@@ -1,59 +1,39 @@
-define(['can/map', 'can/map/attributes'], function (m) {
+define(['can/map', './touches', 'can/util/library', 'can/map/attributes'], function (m, Tl, c) {
     'use strict';
     return m.extend({
-        attributes: {
-            phase: 'phase',
-            x: 'number',
-            y: 'number',
-            implementsTouch: 'boolean'
+        init: function() {
+            this.attr('touches', new Tl());
+            this.on();
         },
-        convert: {
-            phase: function (i) {
-                return i;
-            }
-        }
-    }, {
-        start: function (touch) {
-            this.removeAttr('x');
-            this.removeAttr('y');
-            console.log('identifier', touch.identifier);
-            this.attr('xs', touch.pageX || touch.clientX);
-            this.attr('ys', touch.pageY || touch.clientY);
-        },
-        move: function (event) {
-            this.attr('x', event.pageX);
-            this.attr('y', event.pageY);
-        },
-        update: function (event) {
+        changeTouches: function(type, ev) {
 
-            switch (event.type) {
-                case 'touchstart':
-                    this.start(event.originalEvent.touches[0]);
-                    this.attr('phase', 'start');
+            // support mouse events
+            ev = ev.originalEvent ? ev.originalEvent : ev;
+            if(ev.changedTouches) {
+                ev = ev.changedTouches;
+            } else {
+                ev.identifier = 0;
+            }
+
+            var list = this.attr('touches'),
+                changeList = c.makeArray(ev);
+
+            switch(type) {
+                case 'start':
+                    list.reset(changeList);
                     break;
-                case 'mousedown':
-                    this.start(event);
-                    this.attr('phase', 'start');
+                case 'end':
+                    list.lock(changeList).replace();
                     break;
-                case 'touchend':
-                    this.attr('phase', 'end');
+                case 'cancel':
+                    list.replace();
                     break;
-                case 'mouseup':
-                    this.attr('phase', 'end');
-                    break;
-                case 'touchmove':
-                    this.move(event.originalEvent.changedTouches[0]);
-                    this.attr('phase', 'move');
-                    break;
-                case 'mousemove':
-                    this.move(event);
-                    this.attr('phase', 'move');
-                    break;
-                case 'touchcancel':
-                    //if this options endOnCancel
-                    this.attr('phase', 'cancel');
+                case 'move':
+                    list.update(changeList);
                     break;
             }
+
+            this.attr('type', type);
         }
     });
 });
