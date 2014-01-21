@@ -10,18 +10,31 @@ define(['can/map', 'can/map/attributes'], function (m) {
             'y-distance': 'number',
             'start-time': 'date',
             'end-time': 'date',
-            duration: 'number'
+            duration: 'number',
+            plot: 'plot'
         },
         convert: {
-            x: function(touch) {
+            x: function (touch) {
                 return parseFloat(touch.pageX || touch.clientX);
             },
-            y: function(touch) {
+            y: function (touch) {
                 return parseFloat(touch.pageY || touch.clientY);
+            },
+            plot: function (map) {
+                return [
+                    {
+                        x: map.attr('x-origin'),
+                        y: map.attr('y-origin')
+                    },
+                    {
+                        x: map.attr('x'),
+                        y: map.attr('y')
+                    }
+                ];
             }
         }
     }, {
-        init: function(touch) {
+        init: function (touch) {
             this.attr('id', touch.identifier);
             this.attr('x-origin', touch);
             this.attr('y-origin', touch);
@@ -32,17 +45,18 @@ define(['can/map', 'can/map/attributes'], function (m) {
             this.attr('duration', 0);
             return this;
         },
-        end: function() {
+        end: function () {
             var now = new Date();
             var elapsed = now - this.attr('start-time');
             this.attr('duration', elapsed);
             this.attr('end', now);
         },
-        update: function(touch) {
+        update: function (touch) {
             this.attr('x', touch);
             this.attr('y', touch);
             this.attr('x-distance', this.attr('x') - this.attr('x-origin'));
             this.attr('y-distance', this.attr('y') - this.attr('y-origin'));
+            this.attr('plot', this);
         }
     });
 });

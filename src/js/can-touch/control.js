@@ -1,4 +1,4 @@
-define(['can/util/library', 'can/control', './touches', './move', './gesture'], function (u, C, T, Mv, g) {
+define(['can/util/library', 'can/control', './touches', './move', './gesture/control'], function (u, C, T, Mv, G) {
     'use strict';
     return C.extend({
         touchEvents: {
@@ -15,6 +15,7 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture'], 
         },
         defaults: {
             touchModel: null,
+            gestureModel: null,
             endOnCancel: false,
             cancelWithin: 0,
             preventDefault: false,
@@ -35,7 +36,7 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture'], 
         '{touchModel} type': function (el, ev, val) {
             switch (val) {
                 case 'start':
-                    this.gesture = g(this.element, this.options);
+                    this.gesture = new G(this.element, this.options);
                     this.mover = new Mv(this.element, this.options);
                     break;
                 case 'end':

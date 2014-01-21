@@ -4,5 +4,6 @@
 {{#each touches}}
     <div>Touch# <span>{{id}}</span>: <span class="status">{{x}}, {{y}}</span></div>
 {{/each}}
-<div>Status: <span class="status">{{status}}</span></div>
-<div>Gesture: <span class="status">{{gesture}}</span></div>
+{{#if gesture.rect}}
+    <div style="outline:.1em solid lime;width:{{gesture.rect.width}}px;height:{{gesture.rect.height}}px;position:fixed;top:{{gesture.rect.top}}px;left:{{gesture.rect.left}}px"></div>
+{{/if}}

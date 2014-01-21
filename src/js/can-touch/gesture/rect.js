@@ -1,33 +1,39 @@
 define(['can/map', 'can/map/attributes'], function(m) {
     'use strict';
 
-    m.extend({
+    return m.extend({
         attributes: {
             top: 'number',
+            right: 'number',
+            bottom: 'number',
             left: 'number',
             height: 'number',
             width: 'number',
-            'anchor-x': 'number',
-            'anchor-y': 'number'
+            center: 'number',
+            middle: 'number'
         }
     }, {
-        center: function() {
-            return this.attr('width') / 2 + this.attr('left');
-        },
-        middle: function() {
-            return this.attr('height') / 2 + this.attr('top');
-        },
-        top: function() {
-            return this.attr('top'); // TODO: decide on anchor support
-        },
-        right: function() {
-            return this.attr('width') + this.attr('left');
-        },
-        bottom: function() {
-            return this.attr('height') + this.attr('top');
-        },
-        left: function() {
-            return this.attr('left'); // TODO: decide on anchor support
+        update: function(pt1, pt2) {
+            var x1 = pt1.x,
+                x2 = pt2.x,
+                y1 = pt1.y,
+                y2 = pt2.y;
+
+            this.attr({
+                top: Math.min(y1, y2),
+                left: Math.min(x1, x2),
+                bottom: Math.max(y1, y2),
+                right: Math.max(x1, x2)
+            });
+
+
+
+            this.attr('width', this.attr('right') - this.attr('left'));
+            this.attr('height', this.attr('bottom') - this.attr('top'));
+            this.attr('center', this.attr('width') / 2 + this.attr('left'));
+            this.attr('middle', this.attr('height') / 2 + this.attr('top'));
+
+            return this;
         }
     });
 });
