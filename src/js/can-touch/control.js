@@ -1,6 +1,5 @@
-define(['can/util/library', 'can/control', './touches', './move', './gesture'], function (u, C, T, Mv, G) {
+define(['can/util/library', 'can/control', './touches', './move', './gesture'], function (u, C, T, Mv, g) {
     'use strict';
-    // replace this module and give me LIFE
     return C.extend({
         touchEvents: {
             start: 'touchstart',
@@ -15,7 +14,7 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture'], 
             cancel: 'mouseleave'
         },
         defaults: {
-            model: null,
+            touchModel: null,
             endOnCancel: false,
             cancelWithin: 0,
             preventDefault: false,
@@ -23,9 +22,9 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture'], 
         }
     }, {
         init: function () {
-            this.options.model.attr('implementsTouch', this.options.implementsTouch);
+            this.options.touchModel.attr('implementsTouch', this.options.implementsTouch);
         },
-        '{model} implementsTouch': function (el, ev, val) {
+        '{touchModel} implementsTouch': function (el, ev, val) {
             if (this.options.implementsTouch) {
                 u.extend(this.options, this.constructor.touchEvents);
             } else {
@@ -33,10 +32,10 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture'], 
             }
             this.on();
         },
-        '{model} type': function (el, ev, val) {
+        '{touchModel} type': function (el, ev, val) {
             switch (val) {
                 case 'start':
-                    this.gesture = new G(this.element, this.options);
+                    this.gesture = g(this.element, this.options);
                     this.mover = new Mv(this.element, this.options);
                     break;
                 case 'end':
@@ -46,13 +45,13 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture'], 
             }
         },
         '{start}': function (el, ev) {
-            this.options.model.changeTouches('start', ev);
+            this.options.touchModel.changeTouches('start', ev);
         },
         '{end}': function (el, ev) {
-            this.options.model.changeTouches('end', ev);
+            this.options.touchModel.changeTouches('end', ev);
         },
         '{cancel}': function (el, ev) {
-            this.options.model.changeTouches('cancel', ev);
+            this.options.touchModel.changeTouches('cancel', ev);
         }
     });
 });

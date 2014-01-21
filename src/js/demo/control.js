@@ -9,7 +9,7 @@ define(['can/control', 'can-touch'], function (C, t) {
             this.options.touch = t(this.element, {
                 preventDefault: true
             });
-            this.element.append(this.options.view(this.options.touch.options.model));
+            this.element.append(this.options.view(this.options.touch.options.touchModel));
         }
     });
 });
