@@ -56,10 +56,10 @@ define(['can/util/library', 'can/control', './touches', './move'], function (u, 
             //console.log(arguments);
         },
         '{model.touches} 0.point': function(el, ev) {
-            this.options.model.attr('combinedTouch', ev.target.combine());
+            this.options.model.attr('combinedTouch', ev.target.area());
         },
         '{model.touches} 1.point': function(el, ev) {
-            this.options.model.attr('combinedTouch', ev.target.combine());
+            this.options.model.attr('combinedTouch', ev.target.area());
         },
         '{start}': function (el, ev) {
             this.options.model.changeTouches('start', ev);

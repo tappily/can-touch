@@ -8,9 +8,7 @@ define(['can/map', 'can/map/attributes'], function(m) {
             bottom: 'number',
             left: 'number',
             height: 'number',
-            width: 'number',
-            center: 'number',
-            middle: 'number'
+            width: 'number'
         }
     }, {
         update: function(pt1, pt2) {
@@ -28,8 +26,6 @@ define(['can/map', 'can/map/attributes'], function(m) {
 
             this.attr('width', this.attr('right') - this.attr('left'));
             this.attr('height', this.attr('bottom') - this.attr('top'));
-            this.attr('center', this.attr('width') / 2 + this.attr('left'));
-            this.attr('middle', this.attr('height') / 2 + this.attr('top'));
 
             return this;
         }

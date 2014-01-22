@@ -6,8 +6,7 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             point: 'point',
             'start-time': 'date',
             'end-time': 'date',
-            duration: 'number',
-            distance: 'distance'
+            duration: 'number'
         },
         convert: {
             point: function(touch) {
@@ -21,14 +20,13 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
         init: function (touch) {
             this.attr('id', touch.identifier);
             this.attr('origin', touch);
-
-            this.attr('rect', new Rect());
-
+            return this;
+        },
+        start: function() {
             var now = new Date();
             this.attr('start-time', now);
             this.attr('end-time', now);
             this.attr('duration', 0);
-            return this;
         },
         end: function () {
             var now = new Date();
@@ -36,14 +34,16 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             this.attr('duration', elapsed);
             this.attr('end', now);
         },
-        update: function (touch) {
-            this.attr('point', touch);
-
+        distance: function() {
             var xd = this.attr('point.x') - this.attr('origin.x'),
                 yd = this.attr('point.y') - this.attr('origin.y');
-
-            this.attr('distance', Math.sqrt((xd * xd) + (yd * yd)));
-            this.attr('rect').update(this.attr('origin'), this.attr('point'));
+            return Math.sqrt((xd * xd) + (yd * yd));
+        },
+        area: function() {
+            return new Rect().update(this.attr('origin'), this.attr('point'));
+        },
+        update: function (touch) {
+            this.attr('point', touch);
         }
     });
 });

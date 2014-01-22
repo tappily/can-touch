@@ -33,7 +33,7 @@ define(['can/map', './touches', 'can/util/library', 'can/map/attributes'], funct
                     list.replace();
                     break;
                 case 'move':
-                    list.update(changeList);
+                    list.change(changeList);
                     break;
             }
 

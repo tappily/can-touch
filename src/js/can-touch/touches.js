@@ -22,26 +22,27 @@ define(['can/list', './touch', 'can/map', './rect'], function (l, T, M, R) {
             });
             return this;
         },
-        combine: function() {
+        area: function() {
             var startX = Infinity,
                 startY = Infinity,
                 endX = -Infinity,
                 endY = -Infinity;
 
             this.forEach(function(e, i, list) {
-                startY = Math.min(startY, e.attr('rect.top'));
-                startX = Math.min(startX, e.attr('rect.left'));
-                endX = Math.max(endX, e.attr('rect.right'));
-                endY = Math.max(endY, e.attr('rect.bottom'));
+                var area = e.area();
+                startY = Math.min(startY, area.attr('top'));
+                startX = Math.min(startX, area.attr('left'));
+                endX = Math.max(endX, area.attr('right'));
+                endY = Math.max(endY, area.attr('bottom'));
             });
 
-            var rect = new R().update(new M({ x:startX, y: startY }), new M({ x:endX, y: endY }));
-            return rect; //TODO: causing listener to fail????
+            return new R().update(new M({ x:startX, y: startY }), new M({ x:endX, y: endY }));
+
         },
         lock: function(touches) {
             return this._modify(touches, 1);
         },
-        update: function(touches) {
+        change: function(touches) {
             return this._modify(touches, 0);
         }
     });
