@@ -9,7 +9,8 @@ define(['can/control', 'can-touch'], function (C, t) {
             this.options.touch = t(this.element, {
                 preventDefault: true
             });
-            this.element.append(this.options.view(this.options.touch.options.touchModel));
+            // TODO: fix this to point to local demo model and reference touch model there
+            this.element.append(this.options.view(this.options.touch.options.model));
         }
     });
 });

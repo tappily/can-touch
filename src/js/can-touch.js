@@ -1,8 +1,7 @@
-define(['can-touch/control', 'can-touch/model', 'can-touch/gesture/model'], function (C, M, G) {
+define(['can-touch/control', 'can-touch/model'], function (C, M) {
     'use strict';
     return function (selector, options) {
-        options.touchModel = new M();
-        options.gestureModel = new G();
+        options.model = new M();
         return new C(selector, options);
     };
 });

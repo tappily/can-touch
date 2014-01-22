@@ -1,15 +1,19 @@
 define(['can/map', './touches', 'can/util/library', 'can/map/attributes'], function (m, Tl, c) {
     'use strict';
     return m.extend({
-        init: function() {
+        attributes: {
+
+        }
+    }, {
+        init: function () {
             this.attr('touches', new Tl());
             this.on();
+            return this;
         },
-        changeTouches: function(type, ev) {
-
+        changeTouches: function (type, ev) {
             // support mouse events
             ev = ev.originalEvent ? ev.originalEvent : ev;
-            if(ev.changedTouches) {
+            if (ev.changedTouches) {
                 ev = ev.changedTouches;
             } else {
                 ev.identifier = 0;
@@ -18,7 +22,7 @@ define(['can/map', './touches', 'can/util/library', 'can/map/attributes'], funct
             var list = this.attr('touches'),
                 changeList = c.makeArray(ev);
 
-            switch(type) {
+            switch (type) {
                 case 'start':
                     list.reset(changeList);
                     break;

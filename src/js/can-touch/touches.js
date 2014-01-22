@@ -1,4 +1,4 @@
-define(['can/list', './touch'], function (l, T) {
+define(['can/list', './touch', 'can/map', './rect'], function (l, T, M, R) {
     'use strict';
     return l.extend({
         reset: function(touches) {
@@ -21,6 +21,22 @@ define(['can/list', './touch'], function (l, T) {
                 });
             });
             return this;
+        },
+        combine: function() {
+            var startX = Infinity,
+                startY = Infinity,
+                endX = -Infinity,
+                endY = -Infinity;
+
+            this.forEach(function(e, i, list) {
+                startY = Math.min(startY, e.attr('rect.top'));
+                startX = Math.min(startX, e.attr('rect.left'));
+                endX = Math.max(endX, e.attr('rect.right'));
+                endY = Math.max(endY, e.attr('rect.bottom'));
+            });
+
+            var rect = new R().update(new M({ x:startX, y: startY }), new M({ x:endX, y: endY }));
+            return rect; //TODO: causing listener to fail????
         },
         lock: function(touches) {
             return this._modify(touches, 1);

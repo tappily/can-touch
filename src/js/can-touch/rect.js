@@ -14,10 +14,10 @@ define(['can/map', 'can/map/attributes'], function(m) {
         }
     }, {
         update: function(pt1, pt2) {
-            var x1 = pt1.x,
-                x2 = pt2.x,
-                y1 = pt1.y,
-                y2 = pt2.y;
+            var x1 = pt1.attr('x'),
+                x2 = pt2.attr('x'),
+                y1 = pt1.attr('y'),
+                y2 = pt2.attr('y');
 
             this.attr({
                 top: Math.min(y1, y2),
@@ -25,8 +25,6 @@ define(['can/map', 'can/map/attributes'], function(m) {
                 bottom: Math.max(y1, y2),
                 right: Math.max(x1, x2)
             });
-
-
 
             this.attr('width', this.attr('right') - this.attr('left'));
             this.attr('height', this.attr('bottom') - this.attr('top'));

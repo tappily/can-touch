@@ -1,43 +1,28 @@
-define(['can/map', 'can/map/attributes'], function (m) {
+define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
     'use strict';
-    return m.extend({
+    return M.extend({
         attributes: {
-            x: 'x',
-            y: 'y',
-            'x-origin': 'x',
-            'y-origin': 'y',
-            'x-distance': 'number',
-            'y-distance': 'number',
+            origin: 'point',
+            point: 'point',
             'start-time': 'date',
             'end-time': 'date',
             duration: 'number',
-            plot: 'plot'
+            distance: 'distance'
         },
         convert: {
-            x: function (touch) {
-                return parseFloat(touch.pageX || touch.clientX);
-            },
-            y: function (touch) {
-                return parseFloat(touch.pageY || touch.clientY);
-            },
-            plot: function (map) {
-                return [
-                    {
-                        x: map.attr('x-origin'),
-                        y: map.attr('y-origin')
-                    },
-                    {
-                        x: map.attr('x'),
-                        y: map.attr('y')
-                    }
-                ];
+            point: function(touch) {
+                return new M({
+                    x: parseFloat(touch.pageX || touch.clientX),
+                    y: parseFloat(touch.pageY || touch.clientY)
+                });
             }
         }
     }, {
         init: function (touch) {
             this.attr('id', touch.identifier);
-            this.attr('x-origin', touch);
-            this.attr('y-origin', touch);
+            this.attr('origin', touch);
+
+            this.attr('rect', new Rect());
 
             var now = new Date();
             this.attr('start-time', now);
@@ -52,11 +37,13 @@ define(['can/map', 'can/map/attributes'], function (m) {
             this.attr('end', now);
         },
         update: function (touch) {
-            this.attr('x', touch);
-            this.attr('y', touch);
-            this.attr('x-distance', this.attr('x') - this.attr('x-origin'));
-            this.attr('y-distance', this.attr('y') - this.attr('y-origin'));
-            this.attr('plot', this);
+            this.attr('point', touch);
+
+            var xd = this.attr('point.x') - this.attr('origin.x'),
+                yd = this.attr('point.y') - this.attr('origin.y');
+
+            this.attr('distance', Math.sqrt((xd * xd) + (yd * yd)));
+            this.attr('rect').update(this.attr('origin'), this.attr('point'));
         }
     });
 });

@@ -1,4 +1,4 @@
-define(['can/util/library', 'can/control', './touches', './move', './gesture/control'], function (u, C, T, Mv, G) {
+define(['can/util/library', 'can/control', './touches', './move'], function (u, C, T, Mv) {
     'use strict';
     return C.extend({
         touchEvents: {
@@ -14,8 +14,8 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture/con
             cancel: 'mouseleave'
         },
         defaults: {
-            touchModel: null,
-            gestureModel: null,
+            threshold: 3,
+            model: null,
             endOnCancel: false,
             cancelWithin: 0,
             preventDefault: false,
@@ -23,9 +23,9 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture/con
         }
     }, {
         init: function () {
-            this.options.touchModel.attr('implementsTouch', this.options.implementsTouch);
+            this.options.model.attr('implementsTouch', this.options.implementsTouch);
         },
-        '{touchModel} implementsTouch': function (el, ev, val) {
+        '{model} implementsTouch': function () {
             if (this.options.implementsTouch) {
                 u.extend(this.options, this.constructor.touchEvents);
             } else {
@@ -33,26 +33,42 @@ define(['can/util/library', 'can/control', './touches', './move', './gesture/con
             }
             this.on();
         },
-        '{touchModel} type': function (el, ev, val) {
+        '{model} type': function (el, ev, val) {
             switch (val) {
                 case 'start':
-                    this.gesture = new G(this.element, this.options);
                     this.mover = new Mv(this.element, this.options);
                     break;
                 case 'end':
-                    this.gesture.destroy();
                     this.mover.destroy();
                     break;
             }
         },
+        '{model.touches} length': function(el, ev, val, oval) {
+            if(this.options.model.attr('combinedTouch.width') && (this.options.model.attr('combinedTouch.height'))) {
+
+            }
+
+            if(!val && oval === 1) {
+                //console.log('tap');
+            }
+
+            console.log(arguments);
+            //console.log(arguments);
+        },
+        '{model.touches} 0.point': function(el, ev) {
+            this.options.model.attr('combinedTouch', ev.target.combine());
+        },
+        '{model.touches} 1.point': function(el, ev) {
+            this.options.model.attr('combinedTouch', ev.target.combine());
+        },
         '{start}': function (el, ev) {
-            this.options.touchModel.changeTouches('start', ev);
+            this.options.model.changeTouches('start', ev);
         },
         '{end}': function (el, ev) {
-            this.options.touchModel.changeTouches('end', ev);
+            this.options.model.changeTouches('end', ev);
         },
         '{cancel}': function (el, ev) {
-            this.options.touchModel.changeTouches('cancel', ev);
+            this.options.model.changeTouches('cancel', ev);
         }
     });
 });

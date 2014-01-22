@@ -5,7 +5,7 @@ define(['can/control'], function (c) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
-            this.options.touchModel.changeTouches('move', ev);
+            this.options.model.changeTouches('move', ev);
         }
     });
 });
