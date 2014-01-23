@@ -10,6 +10,18 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
         },
         convert: {
             point: function(touch) {
+                if(touch instanceof M) {
+                    return touch;
+                }
+
+                touch = touch.originalEvent ? touch.originalEvent : touch;
+
+                if (touch.changedTouches) {
+                    touch = touch.changedTouches[0];
+                } else {
+                    touch.identifier = 0;
+                }
+
                 return new M({
                     x: parseFloat(touch.pageX || touch.clientX),
                     y: parseFloat(touch.pageY || touch.clientY)
@@ -36,10 +48,27 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             this.attr('end', now);
             return this;
         },
-        distance: function() {
-            var xd = this.attr('point.x') - this.attr('origin.x'),
-                yd = this.attr('point.y') - this.attr('origin.y');
+        _distance: function(xd, yd) {
             return Math.sqrt((xd * xd) + (yd * yd));
+        },
+        distance: function() {
+            return this._distance(this.attr('point.x') - this.attr('origin.x'),
+                                    this.attr('point.y') - this.attr('origin.y'));
+        },
+        angle: function () {
+            var xd = this.attr('point.x') - this.attr('origin.x');
+            var yd = this.attr('point.y') - this.attr('origin.y');
+            var rad = Math.atan2(yd, xd);
+            return rad * (180 / Math.PI);
+        },
+        scale: function() {
+            var point = this._distance(this.attr('point.x'), this.attr('point.y')),
+                origin = this._distance(this.attr('origin.x'), this.attr('origin.y'));
+            return (point / origin);
+        },
+        cancel: function() {
+            this.attr('point', this.attr('origin'));
+            return this;
         },
         area: function() {
             return new Rect().update(this.attr('origin'), this.attr('point'));

@@ -1,9 +1,3 @@
-<div>Phase: <span class="status">{{type}}</span></div>
-<div>Touches: <span class="status">{{touches.length}}</span></div>
-<div>Touch name: <span class="status">{{gesture}}</span></div>
-{{#each touches}}
-    <div>Touch# <span>{{id}}</span>: <span class="status">{{origin.x}} -- {{point.x}}, {{origin.y}} -- {{point.y}}</span></div>
-{{/each}}
 {{#if area}}
     <div style="outline:.1em solid lime;width:{{area.width}}px;height:{{area.height}}px;position:fixed;top:{{area.top}}px;left:{{area.left}}px"></div>
 {{/if}}

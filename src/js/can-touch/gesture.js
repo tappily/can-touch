@@ -1,17 +1,19 @@
-define(['can/control'], function (c) {
+define(['jquery','can/control'], function ($, c) {
     'use strict';
     return c.extend({
         '{move}': function (el, ev) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
-            this.options.model.attr('events', ev).attr('touches').change(this.options.model.attr('events'));
+            this.options.model.attr('touch').update(ev);
+            this.options.model.attr('touch.type', 'move');
+            $(ev.target).trigger('onetouchmove', [this.options.model.attr('touch')]);
         },
-        '{model.touches} 0.point': function(el, ev, val, oval) {
-            this.options.model.attr('area', ev.target.area());
-        },
-        '{model.touches} 1.point': function(el, ev,  val, oval) {
-            this.options.model.attr('area', ev.target.area());
-        },
+        '{cancel}': function (el, ev) {
+            this.options.model.attr('touch').cancel();
+            this.options.model.attr('touch.type', 'cancel');
+            $(ev.target).trigger('onetouchcancel', [this.options.model.attr('touch')]);
+            this.options.model.removeAttr('touch');
+        }
     });
 });

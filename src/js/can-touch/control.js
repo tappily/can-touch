@@ -1,4 +1,4 @@
-define(['can/util/library', 'can/control', './touches', './gesture'], function (u, C, T, Gesture) {
+define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, u, C, Gesture) {
     'use strict';
     return C.extend({
         touchEvents: {
@@ -17,6 +17,7 @@ define(['can/util/library', 'can/control', './touches', './gesture'], function (
             threshold: 30,
             model: null,
             preventDefault: false,
+            status: 'touch', // 'touch' enables the move listener
             implementsTouch: ('ontouchstart' in window)
         }
     }, {
@@ -25,19 +26,22 @@ define(['can/util/library', 'can/control', './touches', './gesture'], function (
                 (this.options.implementsTouch) ? this.constructor.touchEvents : this.constructor.mouseEvents);
             this.on();
         },
-        '{model.touches} length': function(el, ev, val, oval) {
-
+        '{model} {status}': function(el, ev, val, oval) {
+            if(val) {
+                this.gesture = new Gesture(this.element, this.options);
+            } else if(oval) {
+                this.gesture.destroy();
+            }
         },
         '{start}': function (el, ev) {
-            this.gesture = new Gesture(this.element, this.options);
-            this.options.model.attr('events', ev).attr('touches').reset(this.options.model.attr('events'));
+            this.options.model.attr('touch', ev);
+            this.options.model.attr('touch.type', 'start');
+            $(ev.target).trigger('onetouchstart', [this.options.model.attr('touch')]);
         },
         '{end}': function (el, ev) {
-            this.gesture.destroy();
-            this.options.model.attr('events', ev).attr('touches').lock(this.options.model.attr('events')).replace();
-        },
-        '{cancel}': function (el, ev) {
-            this.options.model.attr('events', ev).attr('touches').replace();
+            this.options.model.attr('touch.type', 'end');
+            $(ev.target).trigger('onetouchend', [this.options.model.attr('touch')]);
+            this.options.model.removeAttr('touch');
         }
     });
 });

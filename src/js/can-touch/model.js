@@ -1,23 +1,18 @@
-define(['can/map', './touches', 'can/util/library', 'can/map/attributes'], function (m, Tl, c) {
+define(['jquery', 'can/map', './touch', 'can/map/attributes'], function ($, m, T) {
     'use strict';
     return m.extend({
         attributes: {
-            events: 'events'
+            touch: 'touch',
+            event: 'event'
         },
         convert: {
-            'events': function(ev) {
-                ev = ev.originalEvent ? ev.originalEvent : ev;
-                if (ev.changedTouches) {
-                    ev = ev.changedTouches;
-                } else {
-                    ev.identifier = 0;
-                }
-                return c.makeArray(ev);
+            'touch': function(ev) {
+                return new T(ev);
             }
         }
     }, {
-        init: function () {
-            this.attr('touches', new Tl());
+        init: function() {
+            this.attr('touch', {});
             return this;
         }
     });
