@@ -14,61 +14,30 @@ define(['can/util/library', 'can/control', './touches', './gesture'], function (
             cancel: 'mouseleave'
         },
         defaults: {
-            threshold: 3,
+            threshold: 30,
             model: null,
-            endOnCancel: false,
-            cancelWithin: 0,
             preventDefault: false,
             implementsTouch: ('ontouchstart' in window)
         }
     }, {
         init: function () {
-            this.options.model.attr('implementsTouch', this.options.implementsTouch);
-        },
-        '{model} implementsTouch': function () {
-            if (this.options.implementsTouch) {
-                u.extend(this.options, this.constructor.touchEvents);
-            } else {
-                u.extend(this.options, this.constructor.mouseEvents);
-            }
+            u.extend(this.options,
+                (this.options.implementsTouch) ? this.constructor.touchEvents : this.constructor.mouseEvents);
             this.on();
         },
-        '{model} type': function (el, ev, val) {
-            switch (val) {
-                case 'start':
-                    this.mover = new Gesture(this.element, this.options);
-                    break;
-                case 'end':
-                    this.mover.destroy();
-                    break;
-            }
-        },
         '{model.touches} length': function(el, ev, val, oval) {
-            if(this.options.model.attr('combinedTouch.width') && (this.options.model.attr('combinedTouch.height'))) {
 
-            }
-
-            if(!val && oval === 1) {
-                //console.log('tap');
-            }
-
-            console.log(arguments);
-            //console.log(arguments);
-        },
-        '{model.touches} 0.point': function(el, ev) {
-            this.options.model.attr('combinedTouch', ev.target.area());
-        },
-        '{model.touches} 1.point': function(el, ev) {
-            this.options.model.attr('combinedTouch', ev.target.area());
         },
         '{start}': function (el, ev) {
-            this.options.model.changeTouches('start', ev);
+            this.gesture = new Gesture(this.element, this.options);
+            this.options.model.attr('events', ev).attr('touches').reset(this.options.model.attr('events'));
         },
         '{end}': function (el, ev) {
-            this.options.model.changeTouches('end', ev);
+            this.gesture.destroy();
+            this.options.model.attr('events', ev).attr('touches').lock(this.options.model.attr('events')).replace();
         },
         '{cancel}': function (el, ev) {
-            this.options.model.changeTouches('cancel', ev);
+            this.options.model.attr('events', ev).attr('touches').replace();
         }
     });
 });

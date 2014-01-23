@@ -27,12 +27,14 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             this.attr('start-time', now);
             this.attr('end-time', now);
             this.attr('duration', 0);
+            return this;
         },
         end: function () {
             var now = new Date();
             var elapsed = now - this.attr('start-time');
             this.attr('duration', elapsed);
             this.attr('end', now);
+            return this;
         },
         distance: function() {
             var xd = this.attr('point.x') - this.attr('origin.x'),
@@ -44,6 +46,7 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
         },
         update: function (touch) {
             this.attr('point', touch);
+            return this;
         }
     });
 });

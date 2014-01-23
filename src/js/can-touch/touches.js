@@ -3,7 +3,7 @@ define(['can/list', './touch', 'can/map', './rect'], function (l, T, M, R) {
     return l.extend({
         reset: function(touches) {
             touches.forEach(function(touch, index, list) {
-                list[index] = new T(touch);
+                list[index] = new T(touch).start();
             });
             this.replace(touches);
             return this;
@@ -13,7 +13,7 @@ define(['can/list', './touch', 'can/map', './rect'], function (l, T, M, R) {
                 touches.forEach(function(touch, index, changelist) {
                     if(touch.identifier === it.attr('id')) {
                         it.update(touch);
-                        if(locked === 1) {
+                        if(locked > 0) {
                             it.end(touch);
                         }
                         changelist.splice(index, 1);

@@ -4,6 +4,6 @@
 {{#each touches}}
     <div>Touch# <span>{{id}}</span>: <span class="status">{{origin.x}} -- {{point.x}}, {{origin.y}} -- {{point.y}}</span></div>
 {{/each}}
-{{#if combinedTouch}}
-    <div style="outline:.1em solid lime;width:{{combinedTouch.width}}px;height:{{combinedTouch.height}}px;position:fixed;top:{{combinedTouch.top}}px;left:{{combinedTouch.left}}px"></div>
+{{#if area}}
+    <div style="outline:.1em solid lime;width:{{area.width}}px;height:{{area.height}}px;position:fixed;top:{{area.top}}px;left:{{area.left}}px"></div>
 {{/if}}
