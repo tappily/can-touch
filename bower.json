@@ -6,7 +6,7 @@
     "tappily"
   ],
   "description": "Touch state model and controller for CanJs",
-  "main": "dist/js/can-touch.js",
+  "main": "src/js/can-touch.js",
   "keywords": [
     "javascript",
     "canjs",
