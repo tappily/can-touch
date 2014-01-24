@@ -1,7 +1,7 @@
 define(['jquery','can/control'], function ($, c) {
     'use strict';
     return c.extend({
-        '{move}': function (el, ev) {
+        '{events.move}': function (el, ev) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
@@ -9,7 +9,7 @@ define(['jquery','can/control'], function ($, c) {
             this.options.model.attr('touch.type', 'move');
             $(ev.target).trigger('onetouchmove', [this.options.model.attr('touch')]);
         },
-        '{cancel}': function (el, ev) {
+        '{events.cancel}': function (el, ev) {
             this.options.model.attr('touch').cancel();
             this.options.model.attr('touch.type', 'cancel');
             $(ev.target).trigger('onetouchcancel', [this.options.model.attr('touch')]);
