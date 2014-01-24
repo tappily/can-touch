@@ -20316,14 +20316,14 @@ define('can-touch/rect',['can/map', 'can/map/attributes'], function(m) {
                 y2 = pt2.attr('y');
 
             this.attr({
-                top: Math.min(y1, y2),
-                left: Math.min(x1, x2),
-                bottom: Math.max(y1, y2),
-                right: Math.max(x1, x2)
+                top: Math.round(Math.min(y1, y2)),
+                left: Math.round(Math.min(x1, x2)),
+                bottom: Math.round(Math.max(y1, y2)),
+                right: Math.round(Math.max(x1, x2))
             });
 
-            this.attr('width', this.attr('right') - this.attr('left'));
-            this.attr('height', this.attr('bottom') - this.attr('top'));
+            this.attr('width', Math.round(this.attr('right') - this.attr('left')));
+            this.attr('height', Math.round(this.attr('bottom') - this.attr('top')));
 
             return this;
         }
@@ -20401,8 +20401,22 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
             this.attr('point', this.attr('origin'));
             return this;
         },
-        area: function() {
-            return new Rect().update(this.attr('origin'), this.attr('point'));
+        area: function(offset) {
+            var origin = this.attr('origin'),
+                point = this.attr('point');
+
+            if(offset) {
+                origin = new M({
+                    x: origin.attr('x') - offset.left,
+                    y: origin.attr('y') - offset.top
+                });
+                point = new M({
+                    x: point.attr('x') - offset.left,
+                    y: point.attr('y') - offset.top
+                });
+            }
+
+            return new Rect().update(origin, point);
         },
         update: function (touch) {
             this.attr('point', touch);
