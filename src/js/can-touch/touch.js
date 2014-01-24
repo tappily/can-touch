@@ -26,7 +26,7 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
                 ev = ev.originalEvent ? ev.originalEvent : ev;
 
                 if (ev.changedTouches) {
-                    ev = touch.changedTouches[0];
+                    ev = ev.changedTouches[0];
                 }
                 return ev;
             }
