@@ -13,6 +13,9 @@ define(['can/map', 'can/map/attributes'], function(m) {
         convert: {
             round: function(n) {
                 return Math.round(n);
+            },
+            unit: function(u) {
+                return u ? String(u) : 'px';
             }
         }
     }, {
@@ -33,6 +36,10 @@ define(['can/map', 'can/map/attributes'], function(m) {
             this.attr('height', this.attr('bottom') - this.attr('top'));
 
             return this;
+        },
+        toStyle: function(unit) {
+            unit = this.constructor.convert.unit(unit) + ' ';
+            return 'rect( '+ this.top + unit + this.right + unit + this.bottom + unit + this.left + unit + ')';
         }
     });
 });
