@@ -31,13 +31,10 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, 
         },
         '{events.start}': function (el, ev) {
             this.options.model.attr('touch', ev);
-            this.options.model.attr('touch.type', 'start');
             $(ev.target).trigger('onetouchstart', [this.options.model.attr('touch')]);
         },
         '{events.end}': function (el, ev) {
-            this.options.model.attr('touch.type', 'end');
-            $(ev.target).trigger('onetouchend', [this.options.model.attr('touch')]);
-            this.options.model.removeAttr('touch');
+            $(ev.target).trigger('onetouchend', [this.options.model.removeAttr('touch')]);
         }
     });
 });

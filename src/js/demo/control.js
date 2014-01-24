@@ -10,8 +10,6 @@ define(['can/control', 'can-touch'], function (C, t) {
             this.options.touchControl = t(this.element, {
                 preventDefault: true
             });
-
-            this.on();
             this.element.append(this.options.view(this.options.model));
         },
         ' onetouchmove': function(el, ev, touch) {
@@ -19,7 +17,6 @@ define(['can/control', 'can-touch'], function (C, t) {
                 area: touch.area(),
                 type: touch.attr('type')
             });
-
         }
     });
 });

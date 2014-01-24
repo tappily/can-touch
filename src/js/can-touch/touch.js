@@ -2,35 +2,38 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
     'use strict';
     return M.extend({
         attributes: {
-            origin: 'point',
-            point: 'point',
+            origin: 'touch-point',
+            point: 'touch-point',
             'start-time': 'date',
             'end-time': 'date',
             duration: 'number'
         },
         convert: {
-            point: function(touch) {
-                if(touch instanceof M) {
-                    return touch;
+            'touch-point': function (touch) {
+                touch = this.convert.touch(touch);
+
+                return this.convert.point.call(this, [
+                    (touch.pageX || touch.clientX),
+                    (touch.pageY || touch.clientY)]);
+            },
+            point: function (a) {
+                return {
+                    x: this.convert.number(a[0]),
+                    y: this.convert.number(a[1])
+                };
+            },
+            touch: function (ev) {
+                ev = ev.originalEvent ? ev.originalEvent : ev;
+
+                if (ev.changedTouches) {
+                    ev = touch.changedTouches[0];
                 }
-
-                touch = touch.originalEvent ? touch.originalEvent : touch;
-
-                if (touch.changedTouches) {
-                    touch = touch.changedTouches[0];
-                } else {
-                    touch.identifier = 0;
-                }
-
-                return new M({
-                    x: parseFloat(touch.pageX || touch.clientX),
-                    y: parseFloat(touch.pageY || touch.clientY)
-                });
+                return ev;
             }
         }
     }, {
         init: function (touch) {
-            this.attr('id', touch.identifier);
+            //console.dir(this);
             this.attr('origin', touch);
             return this;
         },
@@ -52,13 +55,18 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             return Math.sqrt((xd * xd) + (yd * yd));
         },
         distance: function() {
-            return this._distance(this.attr('point.x') - this.attr('origin.x'),
-                                    this.attr('point.y') - this.attr('origin.y'));
+            var len = this.length();
+            return this._distance(len.x, len.y);
+        },
+        length: function() {
+            return this.constructor.convert.point([
+                this.attr('point.x') - this.attr('origin.x'),
+                this.attr('point.y') - this.attr('origin.y')
+            ]);
         },
         angle: function () {
-            var xd = this.attr('point.x') - this.attr('origin.x');
-            var yd = this.attr('point.y') - this.attr('origin.y');
-            var rad = Math.atan2(yd, xd);
+            var len = this.length();
+            var rad = Math.atan2(len.y, len.x);
             return rad * (180 / Math.PI);
         },
         scale: function() {
@@ -67,22 +75,27 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             return (point / origin);
         },
         cancel: function() {
-            this.attr('point', this.attr('origin'));
+            this.point = this.origin;
             return this;
         },
         area: function(offset) {
+
             var origin = this.attr('origin'),
                 point = this.attr('point');
 
             if(offset) {
-                origin = new M({
-                    x: origin.attr('x') - offset.left,
-                    y: origin.attr('y') - offset.top
-                });
-                point = new M({
-                    x: point.attr('x') - offset.left,
-                    y: point.attr('y') - offset.top
-                });
+                var offsetX = offset.left || 0,
+                    offsetY = offset.top || 0;
+
+                origin = this.constructor.convert.point([
+                    origin.attr('x') - offsetX,
+                    origin.attr('y') - offsetY
+                ]);
+
+                point = this.constructor.convert.point([
+                    point.attr('x') - offsetX,
+                    point.attr('y') - offsetY
+                ]);
             }
 
             return new Rect().update(origin, point);
