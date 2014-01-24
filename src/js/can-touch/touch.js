@@ -33,7 +33,6 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
         }
     }, {
         init: function (touch) {
-            //console.dir(this);
             this.attr('origin', touch);
             return this;
         },
@@ -59,7 +58,7 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             return this._distance(len.x, len.y);
         },
         length: function() {
-            return this.constructor.convert.point([
+            return this.constructor.convert.point.call(this.constructor, [
                 this.attr('point.x') - this.attr('origin.x'),
                 this.attr('point.y') - this.attr('origin.y')
             ]);
@@ -87,12 +86,12 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
                 var offsetX = offset.left || 0,
                     offsetY = offset.top || 0;
 
-                origin = this.constructor.convert.point([
+                origin = this.constructor.convert.point.call(this.constructor, [
                     origin.attr('x') - offsetX,
                     origin.attr('y') - offsetY
                 ]);
 
-                point = this.constructor.convert.point([
+                point = this.constructor.convert.point.call(this.constructor, [
                     point.attr('x') - offsetX,
                     point.attr('y') - offsetY
                 ]);
