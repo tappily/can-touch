@@ -20301,6 +20301,9 @@ define('can-touch/rect',['can/map', 'can/map/attributes'], function(m) {
         convert: {
             round: function(n) {
                 return Math.round(n);
+            },
+            unit: function(u) {
+                return u ? String(u) : 'px';
             }
         }
     }, {
@@ -20321,6 +20324,10 @@ define('can-touch/rect',['can/map', 'can/map/attributes'], function(m) {
             this.attr('height', this.attr('bottom') - this.attr('top'));
 
             return this;
+        },
+        toStyle: function(unit) {
+            unit = this.constructor.convert.unit(unit) + ' ';
+            return 'rect( '+ this.top + unit + this.right + unit + this.bottom + unit + this.left + unit + ')';
         }
     });
 });
@@ -20352,14 +20359,13 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
                 ev = ev.originalEvent ? ev.originalEvent : ev;
 
                 if (ev.changedTouches) {
-                    ev = touch.changedTouches[0];
+                    ev = ev.changedTouches[0];
                 }
                 return ev;
             }
         }
     }, {
         init: function (touch) {
-            //console.dir(this);
             this.attr('origin', touch);
             return this;
         },
@@ -20385,7 +20391,7 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
             return this._distance(len.x, len.y);
         },
         length: function() {
-            return this.constructor.convert.point([
+            return this.constructor.convert.point.call(this.constructor, [
                 this.attr('point.x') - this.attr('origin.x'),
                 this.attr('point.y') - this.attr('origin.y')
             ]);
@@ -20413,12 +20419,12 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
                 var offsetX = offset.left || 0,
                     offsetY = offset.top || 0;
 
-                origin = this.constructor.convert.point([
+                origin = this.constructor.convert.point.call(this.constructor, [
                     origin.attr('x') - offsetX,
                     origin.attr('y') - offsetY
                 ]);
 
-                point = this.constructor.convert.point([
+                point = this.constructor.convert.point.call(this.constructor, [
                     point.attr('x') - offsetX,
                     point.attr('y') - offsetY
                 ]);
