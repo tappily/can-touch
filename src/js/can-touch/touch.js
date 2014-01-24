@@ -70,8 +70,22 @@ define(['can/map', './rect', 'can/map/attributes'], function (M, Rect) {
             this.attr('point', this.attr('origin'));
             return this;
         },
-        area: function() {
-            return new Rect().update(this.attr('origin'), this.attr('point'));
+        area: function(offset) {
+            var origin = this.attr('origin'),
+                point = this.attr('point');
+
+            if(offset) {
+                origin = new M({
+                    x: origin.attr('x') - offset.left,
+                    y: origin.attr('y') - offset.top
+                });
+                point = new M({
+                    x: point.attr('x') - offset.left,
+                    y: point.attr('y') - offset.top
+                });
+            }
+
+            return new Rect().update(origin, point);
         },
         update: function (touch) {
             this.attr('point', touch);

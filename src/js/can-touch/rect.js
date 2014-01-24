@@ -18,14 +18,14 @@ define(['can/map', 'can/map/attributes'], function(m) {
                 y2 = pt2.attr('y');
 
             this.attr({
-                top: Math.min(y1, y2),
-                left: Math.min(x1, x2),
-                bottom: Math.max(y1, y2),
-                right: Math.max(x1, x2)
+                top: Math.round(Math.min(y1, y2)),
+                left: Math.round(Math.min(x1, x2)),
+                bottom: Math.round(Math.max(y1, y2)),
+                right: Math.round(Math.max(x1, x2))
             });
 
-            this.attr('width', this.attr('right') - this.attr('left'));
-            this.attr('height', this.attr('bottom') - this.attr('top'));
+            this.attr('width', Math.round(this.attr('right') - this.attr('left')));
+            this.attr('height', Math.round(this.attr('bottom') - this.attr('top')));
 
             return this;
         }
