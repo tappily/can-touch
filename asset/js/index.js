@@ -19824,66 +19824,56 @@ define('can/control',["can/util/library", "can/construct"], function( can ) {
 define('can-touch/gesture',['jquery','can/control'], function ($, c) {
     
     return c.extend({
-        '{move}': function (el, ev) {
+        '{events.move}': function (el, ev) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
             this.options.model.attr('touch').update(ev);
-            this.options.model.attr('touch.type', 'move');
             $(ev.target).trigger('onetouchmove', [this.options.model.attr('touch')]);
         },
-        '{cancel}': function (el, ev) {
+        '{events.cancel}': function (el, ev) {
             this.options.model.attr('touch').cancel();
-            this.options.model.attr('touch.type', 'cancel');
-            $(ev.target).trigger('onetouchcancel', [this.options.model.attr('touch')]);
-            this.options.model.removeAttr('touch');
+            $(ev.target).trigger('onetouchcancel', [this.options.model.removeAttr('touch')]);
         }
     });
 });
 define('can-touch/control',['jquery', 'can/util/library', 'can/control', './gesture'], function ($, u, C, Gesture) {
     
-    return C.extend({
-        touchEvents: {
+
+    var events = ('ontouchstart' in this) ? {
             start: 'touchstart',
             move: 'touchmove',
             end: 'touchend',
             cancel: 'touchcanel'
-        },
-        mouseEvents: {
+        } : {
             start: 'mousedown',
             move: 'mousemove',
             end: 'mouseup',
             cancel: 'mouseleave'
-        },
+        };
+
+    return C.extend({
         defaults: {
             threshold: 30,
             model: null,
             preventDefault: false,
-            status: 'touch', // 'touch' enables the move listener
-            implementsTouch: ('ontouchstart' in window)
+            status: 'touch',
+            events: events
         }
     }, {
-        init: function () {
-            u.extend(this.options,
-                (this.options.implementsTouch) ? this.constructor.touchEvents : this.constructor.mouseEvents);
-            this.on();
-        },
-        '{model} {status}': function(el, ev, val, oval) {
-            if(val) {
+        '{model} {status}': function (el, ev, val) {
+            if (val) {
                 this.gesture = new Gesture(this.element, this.options);
-            } else if(oval) {
+            } else if (this.gesture) {
                 this.gesture.destroy();
             }
         },
-        '{start}': function (el, ev) {
+        '{events.start}': function (el, ev) {
             this.options.model.attr('touch', ev);
-            this.options.model.attr('touch.type', 'start');
             $(ev.target).trigger('onetouchstart', [this.options.model.attr('touch')]);
         },
-        '{end}': function (el, ev) {
-            this.options.model.attr('touch.type', 'end');
-            $(ev.target).trigger('onetouchend', [this.options.model.attr('touch')]);
-            this.options.model.removeAttr('touch');
+        '{events.end}': function (el, ev) {
+            $(ev.target).trigger('onetouchend', [this.options.model.removeAttr('touch')]);
         }
     });
 });
@@ -20301,29 +20291,34 @@ define('can-touch/rect',['can/map', 'can/map/attributes'], function(m) {
 
     return m.extend({
         attributes: {
-            top: 'number',
-            right: 'number',
-            bottom: 'number',
-            left: 'number',
-            height: 'number',
-            width: 'number'
+            top: 'round',
+            right: 'round',
+            bottom: 'round',
+            left: 'round',
+            height: 'round',
+            width: 'round'
+        },
+        convert: {
+            round: function(n) {
+                return Math.round(n);
+            }
         }
     }, {
         update: function(pt1, pt2) {
-            var x1 = pt1.attr('x'),
-                x2 = pt2.attr('x'),
-                y1 = pt1.attr('y'),
-                y2 = pt2.attr('y');
+            var x1 = pt1.x,
+                x2 = pt2.x,
+                y1 = pt1.y,
+                y2 = pt2.y;
 
             this.attr({
-                top: Math.round(Math.min(y1, y2)),
-                left: Math.round(Math.min(x1, x2)),
-                bottom: Math.round(Math.max(y1, y2)),
-                right: Math.round(Math.max(x1, x2))
+                top: Math.min(y1, y2),
+                left: Math.min(x1, x2),
+                bottom: Math.max(y1, y2),
+                right: Math.max(x1, x2)
             });
 
-            this.attr('width', Math.round(this.attr('right') - this.attr('left')));
-            this.attr('height', Math.round(this.attr('bottom') - this.attr('top')));
+            this.attr('width', this.attr('right') - this.attr('left'));
+            this.attr('height', this.attr('bottom') - this.attr('top'));
 
             return this;
         }
@@ -20333,35 +20328,38 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
     
     return M.extend({
         attributes: {
-            origin: 'point',
-            point: 'point',
+            origin: 'touch-point',
+            point: 'touch-point',
             'start-time': 'date',
             'end-time': 'date',
             duration: 'number'
         },
         convert: {
-            point: function(touch) {
-                if(touch instanceof M) {
-                    return touch;
+            'touch-point': function (touch) {
+                touch = this.convert.touch(touch);
+
+                return this.convert.point.call(this, [
+                    (touch.pageX || touch.clientX),
+                    (touch.pageY || touch.clientY)]);
+            },
+            point: function (a) {
+                return {
+                    x: this.convert.number(a[0]),
+                    y: this.convert.number(a[1])
+                };
+            },
+            touch: function (ev) {
+                ev = ev.originalEvent ? ev.originalEvent : ev;
+
+                if (ev.changedTouches) {
+                    ev = touch.changedTouches[0];
                 }
-
-                touch = touch.originalEvent ? touch.originalEvent : touch;
-
-                if (touch.changedTouches) {
-                    touch = touch.changedTouches[0];
-                } else {
-                    touch.identifier = 0;
-                }
-
-                return new M({
-                    x: parseFloat(touch.pageX || touch.clientX),
-                    y: parseFloat(touch.pageY || touch.clientY)
-                });
+                return ev;
             }
         }
     }, {
         init: function (touch) {
-            this.attr('id', touch.identifier);
+            //console.dir(this);
             this.attr('origin', touch);
             return this;
         },
@@ -20383,13 +20381,18 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
             return Math.sqrt((xd * xd) + (yd * yd));
         },
         distance: function() {
-            return this._distance(this.attr('point.x') - this.attr('origin.x'),
-                                    this.attr('point.y') - this.attr('origin.y'));
+            var len = this.length();
+            return this._distance(len.x, len.y);
+        },
+        length: function() {
+            return this.constructor.convert.point([
+                this.attr('point.x') - this.attr('origin.x'),
+                this.attr('point.y') - this.attr('origin.y')
+            ]);
         },
         angle: function () {
-            var xd = this.attr('point.x') - this.attr('origin.x');
-            var yd = this.attr('point.y') - this.attr('origin.y');
-            var rad = Math.atan2(yd, xd);
+            var len = this.length();
+            var rad = Math.atan2(len.y, len.x);
             return rad * (180 / Math.PI);
         },
         scale: function() {
@@ -20398,22 +20401,27 @@ define('can-touch/touch',['can/map', './rect', 'can/map/attributes'], function (
             return (point / origin);
         },
         cancel: function() {
-            this.attr('point', this.attr('origin'));
+            this.point = this.origin;
             return this;
         },
         area: function(offset) {
+
             var origin = this.attr('origin'),
                 point = this.attr('point');
 
             if(offset) {
-                origin = new M({
-                    x: origin.attr('x') - offset.left,
-                    y: origin.attr('y') - offset.top
-                });
-                point = new M({
-                    x: point.attr('x') - offset.left,
-                    y: point.attr('y') - offset.top
-                });
+                var offsetX = offset.left || 0,
+                    offsetY = offset.top || 0;
+
+                origin = this.constructor.convert.point([
+                    origin.attr('x') - offsetX,
+                    origin.attr('y') - offsetY
+                ]);
+
+                point = this.constructor.convert.point([
+                    point.attr('x') - offsetX,
+                    point.attr('y') - offsetY
+                ]);
             }
 
             return new Rect().update(origin, point);
@@ -20462,8 +20470,6 @@ define('demo/control',['can/control', 'can-touch'], function (C, t) {
             this.options.touchControl = t(this.element, {
                 preventDefault: true
             });
-
-            this.on();
             this.element.append(this.options.view(this.options.model));
         },
         ' onetouchmove': function(el, ev, touch) {
@@ -20471,7 +20477,6 @@ define('demo/control',['can/control', 'can-touch'], function (C, t) {
                 area: touch.area(),
                 type: touch.attr('type')
             });
-
         }
     });
 });
