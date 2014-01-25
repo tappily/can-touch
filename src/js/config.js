@@ -1,6 +1,7 @@
 require.config({
     baseUrl: 'src/js',
     paths: {
+        'animation-frame': '../../bower_components/animation-frame/AnimationFrame',
         can: '../../bower_components/canjs/amd/can',
         jquerypp: '../../bower_components/jquerypp-release/amd/jquerypp/',
         almond: '../../bower_components/almond/almond',
