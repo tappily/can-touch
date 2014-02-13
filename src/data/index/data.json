@@ -1,4 +1,6 @@
 {
+    "title": "Can touch",
+    "description": "Touch state model and controller for CanJs",
     "scripts": ["index.js"],
     "styles": ["index.css"]
 }
