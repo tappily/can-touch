@@ -22726,12 +22726,18 @@ define('can-touch/gesture',['jquery','can/control'], function ($, c) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
-            this.options.model.attr('touch').update(ev);
-            $(ev.target).trigger('onetouchmove', [this.options.model.attr('touch')]);
+            var touch = this.options.model.attr('touch');
+            if(touch) {
+                touch.update(ev);
+                $(ev.target).trigger('onetouchmove', [touch]);
+            }
         },
         '{events.cancel}': function (el, ev) {
-            this.options.model.attr('touch').cancel();
-            $(ev.target).trigger('onetouchcancel', [this.options.model.removeAttr('touch')]);
+            var touch = this.options.model.attr('touch');
+            if(touch) {
+                touch.cancel();
+                $(ev.target).trigger('onetouchcancel', [this.options.model.removeAttr('touch')]);
+            }
         }
     });
 });
@@ -22756,9 +22762,15 @@ define('can-touch/control',['jquery', 'can/util/library', 'can/control', './gest
             model: null,
             preventDefault: false,
             status: 'touch',
-            events: events
+            events: events,
+            sticky: false
         }
     }, {
+        init: function() {
+            if(this.options.sticky) {
+                delete this.options.events.cancel;
+            }
+        },
         '{model} {status}': function (el, ev, val) {
             if (val) {
                 this.gesture = new Gesture(this.element, this.options);
@@ -23549,7 +23561,8 @@ define('demo/control',['can', 'can/control', 'can-touch', 'animation-frame', 'ca
             this.animation.request(can.proxy(this.animate, this));
 
             this.options.touchControl = t(this.element, {
-                preventDefault: true
+                preventDefault: true,
+                sticky: true
             });
             this.element.append(this.options.view(this.options.model));
         },
