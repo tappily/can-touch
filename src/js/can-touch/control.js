@@ -19,9 +19,15 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, 
             model: null,
             preventDefault: false,
             status: 'touch',
-            events: events
+            events: events,
+            sticky: false
         }
     }, {
+        init: function() {
+            if(this.options.sticky) {
+                delete this.options.events.cancel;
+            }
+        },
         '{model} {status}': function (el, ev, val) {
             if (val) {
                 this.gesture = new Gesture(this.element, this.options);

@@ -14,7 +14,8 @@ define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'],
             this.animation.request(can.proxy(this.animate, this));
 
             this.options.touchControl = t(this.element, {
-                preventDefault: true
+                preventDefault: true,
+                sticky: true
             });
             this.element.append(this.options.view(this.options.model));
         },

@@ -5,12 +5,18 @@ define(['jquery','can/control'], function ($, c) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
-            this.options.model.attr('touch').update(ev);
-            $(ev.target).trigger('onetouchmove', [this.options.model.attr('touch')]);
+            var touch = this.options.model.attr('touch');
+            if(touch) {
+                touch.update(ev);
+                $(ev.target).trigger('onetouchmove', [touch]);
+            }
         },
         '{events.cancel}': function (el, ev) {
-            this.options.model.attr('touch').cancel();
-            $(ev.target).trigger('onetouchcancel', [this.options.model.removeAttr('touch')]);
+            var touch = this.options.model.attr('touch');
+            if(touch) {
+                touch.cancel();
+                $(ev.target).trigger('onetouchcancel', [this.options.model.removeAttr('touch')]);
+            }
         }
     });
 });
