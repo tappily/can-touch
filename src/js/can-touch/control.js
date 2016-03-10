@@ -1,7 +1,9 @@
-define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, u, C, Gesture) {
+define(['jquery', 'can/util/library', 'can/control', './gesture'], (function(context) {
     'use strict';
 
-    var events = ('ontouchstart' in this) ? {
+    return function ($, u, C, Gesture) {
+
+        var events = ('ontouchstart' in context) ? {
             start: 'touchstart',
             move: 'touchmove',
             end: 'touchend',
@@ -13,34 +15,36 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, 
             cancel: 'mouseleave'
         };
 
-    return C.extend({
-        defaults: {
-            threshold: 30,
-            model: null,
-            preventDefault: false,
-            status: 'touch',
-            events: events,
-            sticky: false
-        }
-    }, {
-        init: function() {
-            if(this.options.sticky) {
-                delete this.options.events.cancel;
+        return C.extend({
+            defaults: {
+                threshold: 30,
+                model: null,
+                preventDefault: false,
+                status: 'touch',
+                events: events,
+                sticky: false
             }
-        },
-        '{model} {status}': function (el, ev, val) {
-            if (val) {
-                this.gesture = new Gesture(this.element, this.options);
-            } else if (this.gesture) {
-                this.gesture.destroy();
+        }, {
+            init: function() {
+                if(this.options.sticky) {
+                    delete this.options.events.cancel;
+                }
+            },
+            '{model} {status}': function (el, ev, val) {
+                if (val) {
+                    this.gesture = new Gesture(this.element, this.options);
+                } else if (this.gesture) {
+                    this.gesture.destroy();
+                }
+            },
+            '{events.start}': function (el, ev) {
+                this.options.model.attr('oneTouch', ev);
+                $(ev.target).trigger('onetouchstart', [this.options.model.attr('oneTouch')]);
+            },
+            '{events.end}': function (el, ev) {
+                $(ev.target).trigger('onetouchend', [this.options.model.removeAttr('oneTouch')]);
             }
-        },
-        '{events.start}': function (el, ev) {
-            this.options.model.attr('touch', ev);
-            $(ev.target).trigger('onetouchstart', [this.options.model.attr('touch')]);
-        },
-        '{events.end}': function (el, ev) {
-            $(ev.target).trigger('onetouchend', [this.options.model.removeAttr('touch')]);
-        }
-    });
-});
+        });
+    };
+
+})(this));

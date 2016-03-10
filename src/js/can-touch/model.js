@@ -1,19 +1,14 @@
-define(['jquery', 'can/map', './touch', 'can/map/attributes'], function ($, m, T) {
+define(['jquery', 'can/map', './touch', 'can/map/define'], function ($, m, T) {
     'use strict';
     return m.extend({
-        attributes: {
-            touch: 'touch',
-            event: 'event'
-        },
-        convert: {
-            'touch': function(ev) {
-                return new T(ev);
+        define: {
+            onetouch: {
+                set: function(ev) {
+                    console.log('setting one touch');
+                    return new T(ev);
+                },
+                value: {}
             }
         }
-    }, {
-        init: function() {
-            this.attr('touch', {});
-            return this;
-        }
-    });
+    }, {});
 });

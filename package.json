@@ -1,44 +1,52 @@
 {
-    "name": "can-touch",
-    "version": "0.0.0",
-    "description": "Touch state model and controller for CanJs",
-    "main": "Gruntfile.js",
-    "scripts": {
-        "test": "grunt test"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/tappily/can-touch.git"
-    },
-    "keywords": [
-        "Javascript",
-        "CanJS",
-        "Handlebars"
-    ],
-    "author": "tappily",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/tappily/can-touch/issues"
-    },
-    "homepage": "https://github.com/tappily/can-touch",
-    "dependencies": {},
-    "devDependencies": {
-        "assemble": "~0.4.33",
-        "grunt": "~0.4.2",
-        "bower": "~1.2.8",
-        "grunt-autoprefixer": "~0.6.3",
-        "grunt-contrib-jshint": "~0.7.2",
-        "grunt-bower-requirejs": "~0.8.0",
-        "grunt-contrib-clean": "~0.5.0",
-        "grunt-contrib-compress": "~0.6.0",
-        "grunt-contrib-connect": "~0.5.0",
-        "grunt-contrib-copy": "~0.5.0",
-        "grunt-contrib-less": "~0.8.3",
-        "grunt-contrib-requirejs": "~0.4.1",
-        "grunt-contrib-watch": "~0.5.3",
-        "grunt-gh-pages": "~0.8.1",
-        "grunt-lesslint": "~0.15.0",
-        "grunt-release": "~0.6.0",
-        "load-grunt-tasks": "~0.2.1"
-    }
+  "name": "can-touch",
+  "version": "0.0.0",
+  "description": "Touch state model and controller for CanJs",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tappily/can-touch.git"
+  },
+  "keywords": [
+    "Javascript",
+    "CanJS",
+    "Handlebars"
+  ],
+  "author": "tappily",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tappily/can-touch/issues"
+  },
+  "homepage": "https://github.com/tappily/can-touch",
+  "dependencies": {},
+  "devDependencies": {
+    "almond": "^0.3.1",
+    "animation-frame": "^0.2.5",
+    "assemble": "~0.4.33",
+    "bower": "~1.2.8",
+    "can": "^2.3.20",
+    "grunt": "~0.4.2",
+    "grunt-autoprefixer": "~0.6.3",
+    "grunt-bower-requirejs": "~0.8.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-compress": "~0.6.0",
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-less": "~0.8.3",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-gh-pages": "~0.8.1",
+    "grunt-lesslint": "~0.15.0",
+    "grunt-release": "~0.6.0",
+    "jquery": "^2.2.1",
+    "less-plugin-autoprefix": "^1.5.1",
+    "less-plugin-clean-css": "^1.5.1",
+    "load-grunt-tasks": "~0.2.1",
+    "normalize-css": "^2.3.1",
+    "requirejs-text": "^2.0.12"
+  }
 }

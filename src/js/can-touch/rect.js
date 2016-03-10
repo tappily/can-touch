@@ -1,21 +1,35 @@
-define(['can/map', 'can/map/attributes'], function(m) {
+define(['can/map', 'can/map/define'], function(m) {
     'use strict';
 
     return m.extend({
-        attributes: {
-            top: 'round',
-            right: 'round',
-            bottom: 'round',
-            left: 'round',
-            height: 'round',
-            width: 'round'
-        },
-        convert: {
-            round: function(n) {
-                return Math.round(n);
+        define: {
+            top: {
+                type: 'round'
             },
-            unit: function(u) {
-                return u ? String(u) : 'px';
+            right: {
+                type: 'round'
+            },
+            bottom: {
+                type: 'round'
+            },
+            left: {
+                type: 'round'
+            },
+            height: {
+                type: 'round'
+            },
+            width: {
+                type: 'round'
+            },
+            round: {
+                set: function(n) {
+                    return Math.round(n);
+                }
+            },
+            unit: {
+                set: function(u) {
+                    return u ? String(u) : 'px';
+                }
             }
         }
     }, {
@@ -38,7 +52,7 @@ define(['can/map', 'can/map/attributes'], function(m) {
             return this;
         },
         toStyle: function(unit) {
-            unit = this.constructor.convert.unit(unit) + ' ';
+            unit = this.constructor.define.unit.set(unit) + ' ';
             return 'rect( '+ this.top + unit + this.right + unit + this.bottom + unit + this.left + unit + ')';
         }
     });
