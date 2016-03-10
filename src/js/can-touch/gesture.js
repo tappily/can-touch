@@ -5,17 +5,17 @@ define(['jquery','can/control'], function ($, c) {
             if(this.options.preventDefault) {
                 ev.preventDefault();
             }
-            var touch = this.options.model.attr('oneTouch');
+            var touch = this.options.map.attr('touch');
             if(touch) {
                 touch.update(ev);
                 $(ev.target).trigger('onetouchmove', [touch]);
             }
         },
         '{events.cancel}': function (el, ev) {
-            var touch = this.options.model.attr('oneTouch');
+            var touch = this.options.map.attr('touch');
             if(touch) {
                 touch.cancel();
-                $(ev.target).trigger('onetouchcancel', [this.options.model.removeAttr('oneTouch')]);
+                $(ev.target).trigger('onetouchcancel', [this.options.map.removeAttr('touch')]);
             }
         }
     });

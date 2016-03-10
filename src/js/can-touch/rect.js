@@ -1,35 +1,36 @@
 define(['can/map', 'can/map/define'], function(m) {
     'use strict';
 
+    function round(n) {
+        return Math.round(n);
+    }
+
+    function unit (u) {
+        return u ? String(u) : 'px';
+    }
+
     return m.extend({
         define: {
             top: {
-                type: 'round'
+                type: round
             },
             right: {
-                type: 'round'
+                type: round
             },
             bottom: {
-                type: 'round'
+                type: round
             },
             left: {
-                type: 'round'
+                type: round
             },
             height: {
-                type: 'round'
+                type: round
             },
             width: {
-                type: 'round'
-            },
-            round: {
-                set: function(n) {
-                    return Math.round(n);
-                }
+                type: round
             },
             unit: {
-                set: function(u) {
-                    return u ? String(u) : 'px';
-                }
+                type: unit
             }
         }
     }, {
@@ -52,7 +53,7 @@ define(['can/map', 'can/map/define'], function(m) {
             return this;
         },
         toStyle: function(unit) {
-            unit = this.constructor.define.unit.set(unit) + ' ';
+            unit = unit(unit) + ' ';
             return 'rect( '+ this.top + unit + this.right + unit + this.bottom + unit + this.left + unit + ')';
         }
     });

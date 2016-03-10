@@ -1,66 +1,69 @@
-define(['can/map', './rect', 'can/map/define'], function (M, Rect) {
+define(['can/map', './rect', 'can/map/define'], function ($Map, $Rect) {
     'use strict';
-    return M.extend({
+
+    function whichEvent(ev) {
+        ev = ev.originalEvent ? ev.originalEvent : ev;
+
+        if (ev.changedTouches) {
+            ev = ev.changedTouches[0];
+        }
+
+        return ev;
+    }
+
+    function makePoint() {
+        return {
+            x: parseFloat(a[0]),
+            y: parseFloat(a[1])
+        };
+    }
+
+    return $Map.extend({
         define: {
             origin: {
-                type: 'touchpoint'
+                type: 'touch-point'
             },
-            startTime: {
+            'start-time': {
                 type: 'date'
             },
-            endTime: {
+            'end-time': {
                 type: 'date'
             },
             duration: {
                 type: 'number'
             },
-            touchpoint: {
+            'touch-point': {
                 set: function (touch) {
-                    touch = this.define.onetouch.set(touch);
+                    touch = whichEvent(touch);
 
-                    return this.define.point.set.call(this, [
+                    return makePoint([
                         (touch.pageX || touch.clientX),
                         (touch.pageY || touch.clientY)]);
                 }
             },
             point: {
-                set: function (a) {
-                    return {
-                        x: this.define.number(a[0]),
-                        y: this.define.number(a[1])
-                    };
-                }
+                set: makePoint
             },
-            'oneTouch': {
-                set: function (ev) {
-                    ev = ev.originalEvent ? ev.originalEvent : ev;
-
-                    if (ev.changedTouches) {
-                        ev = ev.changedTouches[0];
-                    }
-
-                    return ev;
-                }
+            'which': {
+                set: whichEvent
             }
         }
     }, {
         init: function (touch) {
             this.attr('origin', touch);
-            return this;
+            console.log('created touch', this);
         },
         start: function () {
             var now = new Date();
-            this.attr('startTime', now);
-            this.attr('endTime', now);
+            this.attr('start-time', now);
+            this.attr('end-time', now);
             this.attr('duration', 0);
-            return this;
         },
         end: function () {
             var now = new Date();
-            var elapsed = now - this.attr('startTime');
+            var elapsed = now - this.attr('start-time');
             this.attr('duration', elapsed);
             this.attr('end', now);
-            return this;
         },
         _distance: function (xd, yd) {
             return Math.sqrt((xd * xd) + (yd * yd));
@@ -70,7 +73,7 @@ define(['can/map', './rect', 'can/map/define'], function (M, Rect) {
             return this._distance(len.x, len.y);
         },
         length: function () {
-            return this.constructor.define.point.set.call(this.constructor, [
+            return makePoint([
                 this.attr('point.x') - this.attr('origin.x'),
                 this.attr('point.y') - this.attr('origin.y')
             ]);
@@ -87,7 +90,6 @@ define(['can/map', './rect', 'can/map/define'], function (M, Rect) {
         },
         cancel: function () {
             this.point = this.origin;
-            return this;
         },
         area: function (offset) {
 
@@ -98,23 +100,21 @@ define(['can/map', './rect', 'can/map/define'], function (M, Rect) {
                 var offsetX = offset.left || 0,
                     offsetY = offset.top || 0;
 
-                origin = this.constructor.define.point.set.call(this.constructor, [
+                origin = makePoint([
                     origin.attr('x') - offsetX,
                     origin.attr('y') - offsetY
                 ]);
 
-                point = this.constructor.define.point.set.call(this.constructor, [
+                point = makePoint([
                     point.attr('x') - offsetX,
                     point.attr('y') - offsetY
                 ]);
             }
 
-            return new Rect().update(origin, point);
+            return new $Rect().update(origin, point);
         },
         update: function (touch) {
             this.attr('point', touch);
-            return this;
         }
     });
-})
-;
+});

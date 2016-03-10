@@ -1,7 +1,7 @@
-define(['can-touch/control', 'can-touch/model'], function (C, M) {
+define(['can-touch/control', 'can-touch/map'], function ($TouchControl, $TouchMap) {
     'use strict';
     return function (selector, options) {
-        options.model = new M();
-        return new C(selector, options);
+        options.map = new $TouchMap();
+        return new $TouchControl(selector, options);
     };
 });

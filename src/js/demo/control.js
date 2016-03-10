@@ -17,6 +17,7 @@ define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'],
                 preventDefault: true,
                 sticky: true
             });
+
             this.element.append(this.options.view(this.options.model));
         },
         animate: function() {
@@ -24,6 +25,7 @@ define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'],
             this.animation.request(can.proxy(this.animate, this));
         },
         ' onetouchmove': function(el, ev, touch) {
+            console.log('touch move');
             this.options.model.attr({
                 area: touch.area(),
                 type: touch.attr('type')

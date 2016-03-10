@@ -1,9 +1,7 @@
-define(['jquery', 'can/util/library', 'can/control', './gesture'], (function(context) {
+define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, u, C, Gesture) {
     'use strict';
 
-    return function ($, u, C, Gesture) {
-
-        var events = ('ontouchstart' in context) ? {
+    var events = ('ontouchstart' in window) ? {
             start: 'touchstart',
             move: 'touchmove',
             end: 'touchend',
@@ -18,7 +16,7 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], (function(con
         return C.extend({
             defaults: {
                 threshold: 30,
-                model: null,
+                map: null,
                 preventDefault: false,
                 status: 'touch',
                 events: events,
@@ -29,8 +27,9 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], (function(con
                 if(this.options.sticky) {
                     delete this.options.events.cancel;
                 }
+                console.log('map touch is', this.options.map.attr('touch'));
             },
-            '{model} {status}': function (el, ev, val) {
+            '{map} {status}': function (el, ev, val) {
                 if (val) {
                     this.gesture = new Gesture(this.element, this.options);
                 } else if (this.gesture) {
@@ -38,13 +37,18 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], (function(con
                 }
             },
             '{events.start}': function (el, ev) {
-                this.options.model.attr('oneTouch', ev);
-                $(ev.target).trigger('onetouchstart', [this.options.model.attr('oneTouch')]);
+                console.log('model sets touch on', this.options.map);
+
+                console.log('touch mapped as', this.options.map.attr('touch'));
+
+                this.options.map.attr('touch', ev);
+
+                console.log('touch mapped as', this.options.map.attr('touch'));
+
+                $(ev.target).trigger('onetouchstart', [this.options.map.attr('touch')]);
             },
             '{events.end}': function (el, ev) {
-                $(ev.target).trigger('onetouchend', [this.options.model.removeAttr('oneTouch')]);
+                $(ev.target).trigger('onetouchend', [this.options.map.removeAttr('touch')]);
             }
         });
-    };
-
-})(this));
+});
