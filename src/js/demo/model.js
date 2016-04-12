@@ -1,4 +1,4 @@
-define(['jquery', 'can/map'], function ($, m) {
+define(['can/map'], function ($map) {
     'use strict';
-    return m.extend({});
+    return $map.extend({});
 });

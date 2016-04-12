@@ -28,9 +28,6 @@ define(['can/map', 'can/map/define'], function(m) {
             },
             width: {
                 type: round
-            },
-            unit: {
-                type: unit
             }
         }
     }, {

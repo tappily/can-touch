@@ -1,4 +1,4 @@
-define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, u, C, Gesture) {
+define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($jQuery, $can, $control, Gesture) {
     'use strict';
 
     var events = ('ontouchstart' in window) ? {
@@ -13,10 +13,10 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, 
             cancel: 'mouseleave'
         };
 
-        return C.extend({
+        return $control.extend({
             defaults: {
                 threshold: 30,
-                map: null,
+                map: {},
                 preventDefault: false,
                 status: 'touch',
                 events: events,
@@ -41,14 +41,18 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($, 
 
                 console.log('touch mapped as', this.options.map.attr('touch'));
 
+                console.log(this.options.map);
+
                 this.options.map.attr('touch', ev);
+
+
 
                 console.log('touch mapped as', this.options.map.attr('touch'));
 
-                $(ev.target).trigger('onetouchstart', [this.options.map.attr('touch')]);
+                $jQuery(ev.target).trigger('onetouchstart', [this.options.map.attr('touch')]);
             },
             '{events.end}': function (el, ev) {
-                $(ev.target).trigger('onetouchend', [this.options.map.removeAttr('touch')]);
+                $jQuery(ev.target).trigger('onetouchend', [this.options.map.removeAttr('touch')]);
             }
         });
 });

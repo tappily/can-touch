@@ -1,4 +1,4 @@
-define(['can/view/mustache', 'requirejs-text!../../template/partial/touch.hbs'], function (can, template) {
+define(['can/view/stache', 'requirejs-text!../../template/partial/touch.hbs'], function ($stache, template) {
     'use strict';
-    return can.view.mustache(template);
+    return $stache(template);
 });

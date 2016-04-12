@@ -18,10 +18,18 @@ define(['can/map', './rect', 'can/map/define'], function ($Map, $Rect) {
         };
     }
 
+    function makeTouchPoint ($touch) {
+        var touch = whichEvent($touch);
+
+        return makePoint([
+            (touch.pageX || touch.clientX),
+            (touch.pageY || touch.clientY)]);
+    }
+
     return $Map.extend({
         define: {
             origin: {
-                type: 'touch-point'
+                set: makeTouchPoint
             },
             'start-time': {
                 type: 'date'
@@ -33,18 +41,12 @@ define(['can/map', './rect', 'can/map/define'], function ($Map, $Rect) {
                 type: 'number'
             },
             'touch-point': {
-                set: function (touch) {
-                    touch = whichEvent(touch);
-
-                    return makePoint([
-                        (touch.pageX || touch.clientX),
-                        (touch.pageY || touch.clientY)]);
-                }
+                set: makeTouchPoint
             },
             point: {
                 set: makePoint
             },
-            'which': {
+            which: {
                 set: whichEvent
             }
         }

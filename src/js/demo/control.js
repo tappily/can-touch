@@ -1,4 +1,4 @@
-define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'], function (can, C, t, AFrame) {
+define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'], function (can, C, $Touch, AFrame) {
     'use strict';
     return C.extend({
         defaults: {
@@ -13,7 +13,7 @@ define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'],
 
             this.animation.request(can.proxy(this.animate, this));
 
-            this.options.touchControl = t(this.element, {
+            this.options.touchControl = $Touch(this.element, {
                 preventDefault: true,
                 sticky: true
             });
@@ -25,7 +25,6 @@ define(['can', 'can/control', 'can-touch', 'animation-frame', 'can/util/batch'],
             this.animation.request(can.proxy(this.animate, this));
         },
         ' onetouchmove': function(el, ev, touch) {
-            console.log('touch move');
             this.options.model.attr({
                 area: touch.area(),
                 type: touch.attr('type')
