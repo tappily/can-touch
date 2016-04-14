@@ -29,8 +29,7 @@ define(['can/map', 'can/map/define'], function(m) {
             width: {
                 type: round
             }
-        }
-    }, {
+        },
         update: function(pt1, pt2) {
             var x1 = pt1.x,
                 x2 = pt2.x,

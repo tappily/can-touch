@@ -11,10 +11,10 @@ define(['can/map', './rect', 'can/map/define'], function ($Map, $Rect) {
         return ev;
     }
 
-    function makePoint() {
+    function makePoint($array) {
         return {
-            x: parseFloat(a[0]),
-            y: parseFloat(a[1])
+            x: parseFloat($array[0]),
+            y: parseFloat($array[1])
         };
     }
 
@@ -26,31 +26,59 @@ define(['can/map', './rect', 'can/map/define'], function ($Map, $Rect) {
             (touch.pageY || touch.clientY)]);
     }
 
+    function distance (xd, yd) {
+        return Math.sqrt((xd * xd) + (yd * yd));
+    }
+
     return $Map.extend({
         define: {
-            origin: {
-                set: makeTouchPoint
-            },
-            'start-time': {
-                type: 'date'
+            angle: {
+                get: function() {
+                    var len = this.attr('length');
+                    var rad = Math.atan2(len.y, len.x);
+                    return rad * (180 / Math.PI);
+                }
             },
             'end-time': {
                 type: 'date'
             },
+            distance: {
+                get: function() {
+                    var len = this.attr('length');
+                    return distance(len.x, len.y);
+                }
+            },
             duration: {
                 type: 'number'
             },
-            'touch-point': {
+            length: {
+                get: function() {
+                    return makePoint([
+                        this.attr('point.x') - this.attr('origin.x'),
+                        this.attr('point.y') - this.attr('origin.y')
+                    ]);
+                }
+            },
+            origin: {
                 set: makeTouchPoint
             },
             point: {
                 set: makePoint
             },
-            which: {
-                set: whichEvent
+            scale: {
+                get: function() {
+                    var point = distance(this.attr('point.x'), this.attr('point.y')),
+                        origin = distance(this.attr('origin.x'), this.attr('origin.y'));
+                    return (point / origin);
+                }
+            },
+            'start-time': {
+                type: 'date'
+            },
+            'touch-point': {
+                set: makeTouchPoint
             }
-        }
-    }, {
+        },
         init: function (touch) {
             this.attr('origin', touch);
             console.log('created touch', this);
@@ -67,34 +95,10 @@ define(['can/map', './rect', 'can/map/define'], function ($Map, $Rect) {
             this.attr('duration', elapsed);
             this.attr('end', now);
         },
-        _distance: function (xd, yd) {
-            return Math.sqrt((xd * xd) + (yd * yd));
-        },
-        distance: function () {
-            var len = this.length();
-            return this._distance(len.x, len.y);
-        },
-        length: function () {
-            return makePoint([
-                this.attr('point.x') - this.attr('origin.x'),
-                this.attr('point.y') - this.attr('origin.y')
-            ]);
-        },
-        angle: function () {
-            var len = this.length();
-            var rad = Math.atan2(len.y, len.x);
-            return rad * (180 / Math.PI);
-        },
-        scale: function () {
-            var point = this._distance(this.attr('point.x'), this.attr('point.y')),
-                origin = this._distance(this.attr('origin.x'), this.attr('origin.y'));
-            return (point / origin);
-        },
         cancel: function () {
             this.point = this.origin;
         },
         area: function (offset) {
-
             var origin = this.attr('origin'),
                 point = this.attr('point');
 

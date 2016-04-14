@@ -27,7 +27,6 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($jQ
                 if(this.options.sticky) {
                     delete this.options.events.cancel;
                 }
-                console.log('map touch is', this.options.map.attr('touch'));
             },
             '{map} {status}': function (el, ev, val) {
                 if (val) {
@@ -37,18 +36,7 @@ define(['jquery', 'can/util/library', 'can/control', './gesture'], function ($jQ
                 }
             },
             '{events.start}': function (el, ev) {
-                console.log('model sets touch on', this.options.map);
-
-                console.log('touch mapped as', this.options.map.attr('touch'));
-
-                console.log(this.options.map);
-
                 this.options.map.attr('touch', ev);
-
-
-
-                console.log('touch mapped as', this.options.map.attr('touch'));
-
                 $jQuery(ev.target).trigger('onetouchstart', [this.options.map.attr('touch')]);
             },
             '{events.end}': function (el, ev) {

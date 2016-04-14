@@ -4,7 +4,7 @@ define(['can/map', './touch', 'can/map/define'], function ($map, $Touch) {
         define: {
             touch: {
                 Type: $Touch,
-                Value: $Touch
+                value: {}
             }
         }
     });
